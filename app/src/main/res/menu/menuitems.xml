@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item android:id="@+id/settings"
+            android:title="@string/settings"
+            android:icon="@drawable/settings"
+            android:onClick="onGroupItemClick"
+            app:showAsAction="ifRoom|withText" />
+
+        <item android:id="@+id/share"
+            android:onClick="onGroupItemClick"
+            android:title="@string/share"
+            android:icon="@drawable/share"
+            app:showAsAction="ifRoom|withText"/>
+
+        <item android:id="@+id/about"
+            android:onClick="onGroupItemClick"
+            android:title="@string/about"
+            android:icon="@drawable/about"
+            app:showAsAction="ifRoom|withText"/>
+</menu>
