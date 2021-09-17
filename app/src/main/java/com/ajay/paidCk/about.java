@@ -23,8 +23,8 @@ public class about extends AppCompatActivity
                 startActivity(new Intent(about.this,attribution.class));
             }
         });
-        Button rate=findViewById(R.id.rate);
-        rate.setOnClickListener(new View.OnClickListener() {
+        //Button rate=findViewById(R.id.rate);
+        /*rate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -32,7 +32,7 @@ public class about extends AppCompatActivity
                 startActivity(intent
                 );
             }
-        });
+        });*/
         Button feedback= findViewById(R.id.feedback);
         feedback.setOnClickListener(  new View.OnClickListener() {
             @Override

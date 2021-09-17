@@ -3,11 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/android_project/ckPaid/app/src/main/res/drawable/yellowchoose.xml" value="0.23897435897435898" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/activity_about.xml" value="0.11018237082066869" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/activity_attribution.xml" value="0.2265625" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/activity_main.xml" value="0.2265625" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/bluekeyboardview.xml" value="0.2265625" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/bluepreview.xml" value="0.2265625" />
+        <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/dialog_box.xml" value="0.2" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/greenkeyboardview.xml" value="0.2265625" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/greenpreview.xml" value="0.2265625" />
         <entry key="..\:/android_project/ckPaid/app/src/main/res/layout/keyboardview.xml" value="0.2265625" />

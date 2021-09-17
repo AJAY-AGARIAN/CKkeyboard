@@ -49,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
         adddot(0);
         viewPager.addOnPageChangeListener(viewlistner);
 
+        dialogBox cdd=new dialogBox(this);
+
+
         next.setOnClickListener(new View.OnClickListener(){
             int count=0;
             @Override
@@ -62,20 +65,17 @@ public class MainActivity extends AppCompatActivity {
                 }*/
             }
         });
-        sysbtn.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                if(curruntpg==0) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
-                    startActivity(intent);
-                }
-                else if(curruntpg==1){
-                    InputMethodManager imm = (InputMethodManager)
-                            getSystemService(Context.INPUT_METHOD_SERVICE);
-                    assert imm != null;
-                    imm.showInputMethodPicker();
-                }
+        sysbtn.setOnClickListener(v -> {
+            if(curruntpg==0) {
+                cdd.show();
+                /*Intent intent = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
+                startActivity(intent);*/
+            }
+            else if(curruntpg==1){
+                InputMethodManager imm = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.showInputMethodPicker();
             }
         });
         back.setOnClickListener(new View.OnClickListener(){
