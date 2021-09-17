@@ -5,7 +5,19 @@
     <color name="colorAccent">#3498DB </color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
-    <color name="bgc">#212F3D</color>
+    <color name="bgc">#17202A</color>
+    <color name="press">#34495E</color>
     <color name="roundbtncolor">#AED6F1</color>
     <color name="textcolor">#85929E</color>
+    <color name="bgcpress">#283747</color>
+    <color name="red">#E74C3C</color>
+    <color name="redpress">#EC7063</color>
+    <color name="blue">#2E86C1</color>
+    <color name="bluepress">#3498DB</color>
+    <color name="yellow">#F1C40F</color>
+    <color name="yellowpress">#F4D03F</color>
+    <color name="green">#27AE60</color>
+    <color name="greenpress">#52BE80</color>
+    <color name="grey">#B3B6B7</color>
+    <color name="greypress">#D0D3D4</color>
 </resources>

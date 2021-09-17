@@ -4,5 +4,5 @@
     android:horizontalGap="0px"
     android:verticalGap="0px"
     android:keyHeight="40dp"
-    android:keyBackground="@color/white">
+    android:keyBackground="@color/bgc">
 </Keyboard>

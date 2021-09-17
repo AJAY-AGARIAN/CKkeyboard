@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ajay.prokeyboard">
+    package="com.ajay.paidCk">
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/codinglogo"
-        android:label="@string/app_name"
+        android:label= "@string/app_name"
         android:roundIcon="@mipmap/codinglogo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".attribution"
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="@xml/backup_descriptor">
+        <activity android:name="com.ajay.paidCk.attribution"
             android:screenOrientation="portrait"/>
-        <activity android:name=".about"
+        <activity android:name="com.ajay.paidCk.about"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.ajay.paidCk.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -25,12 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".settings"
+        <activity android:name="com.ajay.paidCk.settings"
             android:screenOrientation="portrait"/>
 
         <service
-            android:name=".inputMethodService"
-            android:label="Coding Keyboard"
+            android:name="com.ajay.paidCk.inputMethodService"
+            android:label="Coding Keyboard AdFree"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -40,6 +41,7 @@
                 android:name="android.view.im"
                 android:resource="@xml/methord" />
         </service>
+
     </application>
 
 </manifest>

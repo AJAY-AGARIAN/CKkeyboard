@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="-1575dp"
         tools:layout_editor_absoluteY="-648dp">
@@ -33,6 +37,30 @@
                 android:layout_marginStart="10dp"
                 android:textAlignment="center"
                 android:textSize="25sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:src="@drawable/caution"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/caution"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -74,7 +102,7 @@
                 android:id="@+id/preview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="false"
+                android:checked="true"
                 android:onClick="preview"
                 android:text="@string/preview"
                 android:textSize="15sp" />
@@ -87,26 +115,206 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center"
-                android:src="@drawable/caution" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
+            <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-1638606767407150/1428489368"-->
+            <!--
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@string/caution"
-                android:textSize="17sp" />
-        </LinearLayout>
+                ads:adSize="MEDIUM_RECTANGLE"
+                ads:adUnitId="ca-app-pub-3940256099942544/6300978111" /> -->
 
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KEYBOARD COLOUR"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"/>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <RadioGroup
+                android:id="@+id/radioGroupColour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+                <RadioButton
+                    android:id="@+id/backRadio"
+                    android:layout_width="90dp"
+                    android:text="BLACK"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/chooseblack"
+                    android:layout_marginStart="20dp"
+                    android:checked="true"/>
+                <RadioButton
+                    android:id="@+id/whiteRadio"
+                    android:layout_width="90dp"
+                    android:text="GREY"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/whitechoose"
+                    android:layout_marginStart="5dp"/>
+                <RadioButton
+                    android:id="@+id/blueRadio"
+                    android:layout_width="90dp"
+                    android:text="BLUE"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bluechoose"
+                    android:layout_marginStart="5dp"/>
+                <RadioButton
+                    android:id="@+id/redRadio"
+                    android:layout_width="90dp"
+                    android:text="RED"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/choosered"
+                    android:layout_marginStart="5dp"/>
+                <RadioButton
+                    android:id="@+id/greenRadio"
+                    android:layout_width="90dp"
+                    android:text="GREEN"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/greenchoose"
+                    android:layout_marginStart="5dp"/>
+                <RadioButton
+                    android:id="@+id/yellowRadio"
+                    android:layout_width="90dp"
+                    android:text="YELLOW"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/yellowchoose"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"/>
+            </RadioGroup>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="KEYBOARD SIZE"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:layout_marginStart="20dp"/>
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"
+                android:max="2"
+                android:progress="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SMALL"
+                    android:textSize="12sp"
+                    android:layout_marginStart="30dp"/>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MEDIUM"
+                    android:textSize="14sp"/>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LARGE"
+                    android:layout_marginEnd="30dp"
+                    android:textSize="16sp"/>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KEYBOARD LAYOUT"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"/>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/keylayouts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+            <RadioButton
+                android:id="@+id/querty"
+                android:layout_width="100dp"
+                android:text="QWERTY"
+                android:textAlignment="center"
+                android:layout_height="wrap_content"
+                android:background="@drawable/roundbtn"
+                android:layout_marginStart="20dp"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/dvorak"
+                android:layout_width="100dp"
+                android:text="DVORAK"
+                android:textAlignment="center"
+                android:layout_height="wrap_content"
+                android:background="@drawable/roundbtn"
+                android:layout_marginStart="10dp" />
+            <RadioButton
+                android:id="@+id/azerty"
+                android:layout_width="100dp"
+                android:text="AZERTY"
+                android:textAlignment="center"
+                android:layout_height="wrap_content"
+                android:background="@drawable/roundbtn"
+                android:layout_marginStart="10dp" />
+            <RadioButton
+                android:id="@+id/qwertz"
+                android:layout_width="100dp"
+                android:text="QWERTZ"
+                android:textAlignment="center"
+                android:layout_height="wrap_content"
+                android:background="@drawable/roundbtn"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"/>
+        </RadioGroup>
+        </HorizontalScrollView>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

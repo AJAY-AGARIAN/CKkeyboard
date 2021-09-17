@@ -10,11 +10,9 @@
     <string name="hometown">Hometown- Thiruvananthapuram, Kerala</string>
     <string name="Credits">Credits</string>
     <string name="stackoverflow">1. www.stackoverflow.com -Technical support.</string>
-    <string name="github">2. www.github.com -Open source contents</string>
-    <string name="devand">3. http://developer.android.com -Technical support</string>
-    <string name="flaticon">4. www.flaticon.com - for all awesome icons in this app. Tap on the button to view individual attribution.</string>
+    <string name="devand">2. http://developer.android.com -Technical support</string>
+    <string name="flaticon">3. www.flaticon.com - for all awesome icons in this app. Tap on the button to view individual attribution.</string>
     <string name="email">Email- ajkrishna7117me@gmail.com</string>
-    <string name="call">Call/WhatsApp- 9496482408</string>
     <string name="linkedin">Linkedin- https://www.linkedin.com/in/ajay-krishna-p-586533151/</string>
     <string name="contact">Contact</string>
     <string name="aboutText">Coding on mobile made easy. No more switching between keyboard views to select the characters you need in your code.
@@ -33,13 +31,11 @@
     <string name="link11"><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from <a href="https://www.flaticon.com/"                 title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/"                 title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div></string>
     <string name="link12"><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from <a href="https://www.flaticon.com/"                 title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/"                 title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div></string>
     <string name="infoabout">This app does not collect any kind of data</string>
-    <string name="about">About</string>
     <string name="attribution">Flaticon attribution</string>
     <string name="enable">ENABLE</string>
     <string name="infochange">You can change keyboard preferences in settings.</string>
     <string name="start_typing">Start typing...</string>
     <string name="next">NEXT</string>
-    <string name="settings">Settings</string>
     <string name="sound">SOUND</string>
     <string name="sound2">Produce sound on key touch?</string>
     <string name="vibrate">VIBRATE</string>
@@ -50,5 +46,6 @@
     <string name="settings">Settings</string>
     <string name="share">Share</string>
     <string name="about">About</string>
+    <string name="feedback">Send Feedback</string>
 
 </resources>

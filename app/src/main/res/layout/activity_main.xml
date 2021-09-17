@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ajay.prokeyboard.MainActivity">
+    tools:context="com.ajay.paidCk.MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="117dp">
+        tools:layout_editor_absoluteX="-85dp"
+        tools:layout_editor_absoluteY="-250dp">
 
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="330dp"
+        android:layout_marginTop="350dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
@@ -35,8 +36,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:background="@drawable/roundbtn"
-            android:textSize="15sp"
             android:text="@string/enable"
+            android:textSize="15sp"
             android:visibility="visible" />
 
         <LinearLayout
@@ -64,16 +65,16 @@
                 android:textSize="17sp" />
         </LinearLayout>
 
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/textonboard"
-                android:visibility="invisible"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:hint="@string/start_typing"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"/>
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/textonboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:hint="@string/start_typing"
+            android:visibility="invisible" />
     </LinearLayout>
 
 
@@ -81,8 +82,8 @@
         android:id="@+id/linelayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@+id/viewpager"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="@+id/linearLayout"
@@ -129,4 +130,22 @@
             tools:visibility="visible" />
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+    <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
+    <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-1638606767407150/1428489368"-->
+    <!--
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        ads:layout_constraintVertical_bias="1.0" /> -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
