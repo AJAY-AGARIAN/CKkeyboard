@@ -15,6 +15,23 @@
         android:orientation="vertical"
         tools:layout_editor_absoluteX="-1575dp"
         tools:layout_editor_absoluteY="-648dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
+            <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-6204356404799936/7323653457"-->
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adViewSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                ads:adSize="BANNER"
+                ads:adUnitId="ca-app-pub-6204356404799936/7323653457" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,23 +130,7 @@
                 android:layout_marginStart="25dp"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
-            <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-1638606767407150/1428489368"-->
-            <!--
-            <com.google.android.gms.ads.AdView
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/adView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                ads:adSize="MEDIUM_RECTANGLE"
-                ads:adUnitId="ca-app-pub-3940256099942544/6300978111" /> -->
-
-        </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -314,6 +315,7 @@
                 android:layout_marginEnd="10dp"/>
         </RadioGroup>
         </HorizontalScrollView>
+
     </LinearLayout>
 
     </ScrollView>

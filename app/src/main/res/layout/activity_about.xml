@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.ajay.paidCk.about">
+            tools:context="com.ajay.prokeyboard.about">
 
 
     <ScrollView
@@ -80,6 +80,25 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
+                android:text="Download AD FREE version from Play store"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+            <Button
+                android:id="@+id/adfree"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/roundbtn"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="DOWNLOAD NOW"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
                 android:text="Have suggestions/feedback?"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
@@ -91,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/feedback"/>
-            <!--<androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -108,8 +127,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="RATE ON PLAY STORE"/>-->
-
+                android:text="RATE ON PLAY STORE"/>
 
             <LinearLayout
                 android:id="@+id/infolayout"
@@ -135,8 +153,9 @@
                     android:textSize="17sp" />
 
             </LinearLayout>
+
             <ImageView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
                 android:src="@drawable/msg"/>
@@ -148,9 +167,68 @@
                 android:textStyle="italic"
                 android:layout_marginEnd="10dp"
                 android:textSize="17sp" />
-
+            <ImageView
+                android:id="@+id/ad"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/browser_actions_context_menu_max_width"
+                android:layout_gravity="center"
+                android:src="@drawable/ad"/>
         </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
+                <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-6204356404799936/7323653457"-->
 
+                <com.google.android.gms.ads.AdView
+                    xmlns:ads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/adViewAbout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    ads:adSize="MEDIUM_RECTANGLE"
+                    ads:adUnitId="ca-app-pub-6204356404799936/7323653457"/>
+            </LinearLayout>
+        <!--
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/aboutdev"
+                android:textSize="30sp"
+                android:textAlignment="center"/>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ajay" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textAlignment="center"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/college"
+                android:textSize="20sp"/>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hometown"
+                android:textSize="20sp"/>
+        </LinearLayout> -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

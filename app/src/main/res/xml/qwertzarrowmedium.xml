@@ -14,8 +14,8 @@
         <Key android:codes="5004" android:keyLabel="123" android:keyWidth="10%p" android:keyEdgeFlags="right"/>
     </Row>
     <Row>
-        <Key android:codes="34" android:keyLabel='"' android:keyWidth="7.14%p" android:keyEdgeFlags="left"/>
-        <Key android:codes="39" android:keyLabel="'" android:keyWidth="7.14%p"/>
+        <Key android:codes="34" android:keyLabel='"' android:keyWidth="7.14%p" android:keyEdgeFlags="left" />
+        <Key android:codes="39" android:keyLabel="'" android:keyWidth="7.14%p" />
         <Key android:codes="37" android:keyLabel="%" android:keyWidth="7.14%p"/>
         <Key android:codes="96" android:keyLabel="`" android:keyWidth="7.14%p"/>
         <Key android:codes="63" android:keyLabel="\?" android:keyWidth="7.14%p"/>

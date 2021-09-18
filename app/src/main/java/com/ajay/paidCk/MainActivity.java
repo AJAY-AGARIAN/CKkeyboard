@@ -1,7 +1,8 @@
-package com.ajay.paidCk;
+package com.ajay.prokeyboard;
 
 import android.content.Context;
 import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -17,8 +18,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+
+
 public class MainActivity extends AppCompatActivity {
 
+    private AdView mAdView;
     private ViewPager viewPager;
     private LinearLayout linearLayout;
     private TextView[] mdots;
@@ -48,9 +57,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sliderAdapter);
         adddot(0);
         viewPager.addOnPageChangeListener(viewlistner);
-
         dialogBox cdd=new dialogBox(this);
-
 
         next.setOnClickListener(new View.OnClickListener(){
             int count=0;
@@ -65,17 +72,19 @@ public class MainActivity extends AppCompatActivity {
                 }*/
             }
         });
-        sysbtn.setOnClickListener(v -> {
-            if(curruntpg==0) {
-                cdd.show();
-                /*Intent intent = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
-                startActivity(intent);*/
-            }
-            else if(curruntpg==1){
-                InputMethodManager imm = (InputMethodManager)
-                        getSystemService(Context.INPUT_METHOD_SERVICE);
-                assert imm != null;
-                imm.showInputMethodPicker();
+        sysbtn.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                if(curruntpg==0) {
+                    cdd.show();
+                }
+                else if(curruntpg==1){
+                    InputMethodManager imm = (InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE);
+                    assert imm != null;
+                    imm.showInputMethodPicker();
+                }
             }
         });
         back.setOnClickListener(new View.OnClickListener(){
@@ -87,11 +96,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //ads
-        /*
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544/6300978111");
-        newAd=(AdView)findViewById(R.id.adView);
-        AdRequest adRequest=new AdRequest.Builder().build();
-            newAd.loadAd(adRequest); */
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
     }
 
     public void  adddot(int position){
@@ -129,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 sysbtn.setText("ENABLE");
                 texton.setVisibility(View.GONE);
                 infolayout.setVisibility(View.GONE);
-                //newAd.setVisibility(View.VISIBLE);
+                mAdView.setVisibility(View.VISIBLE);
 
             }else if(i==mdots.length-1){
                 next.setEnabled(true);
@@ -141,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 sysbtn.setVisibility(View.GONE);
                 texton.setVisibility(View.VISIBLE);
                 infolayout.setVisibility(View.VISIBLE);
-                //newAd.setVisibility(View.GONE);
+                mAdView.setVisibility(View.GONE);
 
             }else {
                 next.setEnabled(true);
@@ -154,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 sysbtn.setText("SELECT");
                 texton.setVisibility(View.GONE);
                 infolayout.setVisibility(View.GONE);
-                //newAd.setVisibility(View.VISIBLE);
+                mAdView.setVisibility(View.VISIBLE);
             }
 
         }

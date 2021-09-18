@@ -3,6 +3,8 @@
     package="com.ajay.paidCk">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -46,7 +48,11 @@
             <meta-data
                 android:name="android.view.im"
                 android:resource="@xml/methord" />
-        </service>
+        </service> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- original AdMob App ID: ca-app-pub-6204356404799936~2646041841 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6204356404799936~2646041841" />
     </application>
 
 </manifest>

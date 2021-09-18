@@ -2,40 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/transparent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    tools:context=".dialogBox">
 
-    <LinearLayout
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="20dp">
+    <ImageView
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:src="@drawable/msg"/>
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="20dp">
-        <ImageView
-            android:layout_margin="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:src="@drawable/msg"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:textAlignment="center"
-            android:text="Please note that Android shows such caution while enabling any 3rd party keyboard, not just Coding Keyboard."
-            android:textColor="@android:color/black"
-            android:textSize="16sp"/>
+        android:layout_margin="5dp"
+        android:textAlignment="center"
+        android:text="Please note that Android shows such caution while enabling any 3rd party keyboard, not just Coding Keyboard."
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
 
 
-        <Button
-            android:id="@+id/continueBtn"
-            android:layout_margin="10dp"
-            android:background="@drawable/roundbtn"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Continue"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/continueBtn"
+        android:layout_margin="10dp"
+        android:background="@drawable/roundbtn"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Continue"/>
+</LinearLayout>
 
 
 </LinearLayout>
