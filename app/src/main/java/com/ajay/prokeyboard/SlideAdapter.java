@@ -19,8 +19,7 @@ public class SlideAdapter extends RecyclerView.Adapter<SlideAdapter.SlideViewHol
             R.drawable.typing
     };
 
-    private String[] ontop = { "Click to enable Coding Keyboard", "Select Coding Keyboard as keyboard",
-            "Start typing below to try Coding Keyboard" };
+    private int[] ontop = { R.string.slide_enable, R.string.slide_select, R.string.slide_type };
 
     public SlideAdapter(Context context) {
         this.context = context;
@@ -30,14 +29,14 @@ public class SlideAdapter extends RecyclerView.Adapter<SlideAdapter.SlideViewHol
     @Override
     public SlideViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        assert layoutInflater != null;
+        if (layoutInflater == null) return new SlideViewHolder(new View(context));
         View view = layoutInflater.inflate(R.layout.slidelayout, parent, false);
         return new SlideViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SlideViewHolder holder, int position) {
-        holder.ontoptext.setText(ontop[position]);
+        holder.ontoptext.setText(context.getString(ontop[position]));
         holder.onbaordimage.setImageResource(sideimages[position]);
     }
 

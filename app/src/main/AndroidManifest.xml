@@ -3,8 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -17,9 +15,11 @@
         tools:targetApi="s">
         <activity
             android:name=".attribution"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".about"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
@@ -29,31 +29,27 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".settings"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <service
             android:name=".inputMethodService"
             android:label="Coding Keyboard"
+            android:description="@string/aboutText"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
-
             <meta-data
                 android:name="android.view.im"
                 android:resource="@xml/methord" />
-        </service> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
-        <!-- original AdMob App ID: ca-app-pub-6204356404799936~2646041841 -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6204356404799936~2646041841" />
+        </service>
     </application>
 
 </manifest>

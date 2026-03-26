@@ -80,7 +80,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
-                android:text="Download AD FREE version from Play store"
+                android:text="@string/download_adfree"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
             <Button
@@ -90,7 +90,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="DOWNLOAD NOW"/>
+                android:text="@string/download_now"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="15dp"
-                android:text="Have suggestions/feedback?"
+                android:text="@string/have_feedback"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
             <Button
@@ -117,7 +117,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black"
-                android:text="Enjoying app?"
+                android:text="@string/enjoying_app"
                 android:textSize="15sp"
                 android:layout_gravity="center"/>
             <Button
@@ -127,7 +127,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="RATE ON PLAY STORE"/>
+                android:text="@string/rate_now"/>
 
             <LinearLayout
                 android:id="@+id/infolayout"
@@ -162,7 +162,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Please note that this caution is shown while enabling any 3rd party keyboard not just CK."
+                android:text="@string/keyboard_caution"
                 android:layout_marginStart="10dp"
                 android:textStyle="italic"
                 android:layout_marginEnd="10dp"
@@ -170,26 +170,10 @@
             <ImageView
                 android:id="@+id/ad"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/browser_actions_context_menu_max_width"
+                android:layout_height="250dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ad"/>
         </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-                <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
-                <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-6204356404799936/7323653457"-->
-
-                <com.google.android.gms.ads.AdView
-                    xmlns:ads="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/adViewAbout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    ads:adSize="MEDIUM_RECTANGLE"
-                    ads:adUnitId="ca-app-pub-6204356404799936/7323653457"/>
-            </LinearLayout>
         <!--
             <LinearLayout
             android:layout_width="match_parent"

@@ -1,49 +1,52 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
-    compileSdkVersion 35
+    compileSdk 35
     defaultConfig {
         applicationId "com.ajay.prokeyboard"
-        minSdkVersion 21
-        targetSdkVersion 35
-        //Change this
-        versionCode 13
-        //And this for every production release
-        versionName "4.7"
+        minSdk 21
+        targetSdk 35
+        versionCode 14
+        versionName "5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
+    }
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
     }
     buildTypes {
         release {
-            // Enabling code shrinking, obfuscation, and optimization for the release build
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
-            // Optional: Add debug specific configurations here if needed
         }
     }
     namespace 'com.ajay.prokeyboard'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    // Use only the latest version of constraint layout
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-
+implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'com.google.android.material:material:1.12.0'
     testImplementation 'junit:junit:4.13.2'
-
-    // Migrate to androidx.test for instrumentation testing
     androidTestImplementation 'androidx.test:runner:1.6.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.core:core:1.15.0'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation 'com.google.android.gms:play-services-ads:23.6.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
 }

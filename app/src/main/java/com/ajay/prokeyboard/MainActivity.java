@@ -22,15 +22,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-
 public class MainActivity extends AppCompatActivity {
 
-    private AdView mAdView;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
     private LinearLayout linearLayout;
@@ -84,15 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
                 count++;
                 viewPager.setCurrentItem(currentPage + 1);
-                /*
-                 * if(count==3 && next.getText()=="FINISH")
-                 * {
-                 * startActivity(new Intent(MainActivity.this,MainActivity.class));
-                 * }
-                 */
             }
         });
         sysbtn.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     cdd.show();
                 } else if (currentPage == 1) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    assert imm != null;
+                    if (imm == null) return;
                     imm.showInputMethodPicker();
                 }
             }
@@ -115,17 +101,12 @@ public class MainActivity extends AppCompatActivity {
                 viewPager.setCurrentItem(currentPage - 1);
             }
         });
+    }
 
-        // ads
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-        mAdView = findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewPager.unregisterOnPageChangeCallback(viewlistner);
     }
 
     @SuppressWarnings("deprecation")
@@ -168,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                 sysbtn.setText("ENABLE");
                 texton.setVisibility(View.GONE);
                 infolayout.setVisibility(View.GONE);
-                mAdView.setVisibility(View.VISIBLE);
 
             } else if (position == mdots.length - 1) {
                 next.setEnabled(true);
@@ -180,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
                 sysbtn.setVisibility(View.GONE);
                 texton.setVisibility(View.VISIBLE);
                 infolayout.setVisibility(View.VISIBLE);
-                mAdView.setVisibility(View.GONE);
 
             } else {
                 next.setEnabled(true);
@@ -193,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 sysbtn.setText("SELECT");
                 texton.setVisibility(View.GONE);
                 infolayout.setVisibility(View.GONE);
-                mAdView.setVisibility(View.VISIBLE);
             }
         }
     };
@@ -219,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = "Hey! Download Coding Keyboard from Google play store and feel the comfort of coding on mobile. Visit https://play.google.com/store/apps/details?id=com.ajay.prokeyboard to download app now.";
-                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Coding Keyboard");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Share via"));
                 return true;

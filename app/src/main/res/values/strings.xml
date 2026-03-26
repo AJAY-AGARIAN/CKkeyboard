@@ -31,6 +31,16 @@
     <string name="link11"><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a></div></string>
     <string name="link12"><div>Icons made by <a href="https://www.flaticon.com/authors/google" title="Google">Google</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" target="_blank" title="Creative Commons BY 3.0">CC 3.0 BY</a></div></string>
     <string name="infoabout">This app does not collect any kind of data</string>
+    <string name="download_adfree">Download AD FREE version from Play store</string>
+    <string name="download_now">DOWNLOAD NOW</string>
+    <string name="have_feedback">Have suggestions/feedback?</string>
+    <string name="enjoying_app">Enjoying app?</string>
+    <string name="rate_now">RATE ON PLAY STORE</string>
+    <string name="keyboard_caution">Please note that this caution is shown while enabling any 3rd party keyboard not just CK.</string>
+    <string name="slide_enable">Click to enable Coding Keyboard</string>
+    <string name="slide_select">Select Coding Keyboard as keyboard</string>
+    <string name="slide_type">Start typing below to try Coding Keyboard</string>
+    <string name="feedback_email">ajkrishna7117me@gmail.com</string>
     <string name="attribution">Flaticon attribution</string>
     <string name="enable">ENABLE</string>
     <string name="infochange">You can change keyboard preferences in settings.</string>
@@ -42,7 +52,6 @@
     <string name="vibrate2">Vibrate on key touch?</string>
     <string name="preview">PREVIEW</string>
     <string name="preview2">Display preview of key pressed?</string>
-    <string name="caution">Restart application to experience the changes</string>
     <string name="settings">Settings</string>
     <string name="share">Share</string>
     <string name="about">About</string>

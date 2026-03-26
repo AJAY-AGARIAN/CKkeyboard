@@ -1,21 +1,17 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Keep the IME service entry point
+-keep public class com.ajay.prokeyboard.inputMethodService { *; }
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep all keyboard view classes (custom View used directly, not via reflection)
+-keep public class com.ajay.prokeyboard.keyboard.** { *; }
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep all Activity/Service/Dialog subclasses referenced in the manifest
+-keep public class com.ajay.prokeyboard.MainActivity { *; }
+-keep public class com.ajay.prokeyboard.settings { *; }
+-keep public class com.ajay.prokeyboard.about { *; }
+-keep public class com.ajay.prokeyboard.attribution { *; }
+-keep public class com.ajay.prokeyboard.dialogBox { *; }
+-keep public class com.ajay.prokeyboard.SlideAdapter { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep line numbers in stack traces for easier crash debugging
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile

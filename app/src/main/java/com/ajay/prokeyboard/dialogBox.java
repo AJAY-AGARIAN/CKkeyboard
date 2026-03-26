@@ -19,11 +19,6 @@ public class dialogBox extends Dialog {
         this.c = a;
     }
 
-    // Default constructor required by Android system
-    public dialogBox() {
-        super(null);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

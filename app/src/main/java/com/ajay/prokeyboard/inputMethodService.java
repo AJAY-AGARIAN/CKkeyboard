@@ -6,16 +6,13 @@ import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.FrameLayout;
 
 import com.ajay.prokeyboard.keyboard.CKKeyboardView;
 import com.ajay.prokeyboard.keyboard.KeyData;
@@ -31,7 +28,12 @@ public class inputMethodService extends InputMethodService
     private int currentLayer = KeyboardDefinitions.LAYER_MAIN;
     private int currentSize = 1; // 0=small, 1=medium, 2=large
     private int currentColor = 0;
-    private boolean capsLock = false;
+    // Shift state — mirrors CKKeyboardView constants
+    private int  shiftState    = CKKeyboardView.SHIFT_OFF;
+    private long lastShiftTapMs = 0L;
+    private static final long DOUBLE_TAP_MS = 400L;
+
+    private boolean ctrlActive = false; // one-shot: armed → next key fires Ctrl+key → released
     private boolean soundOn = true;
     private boolean vibratorOn = true;
     private boolean previewEnabled = true;
@@ -48,7 +50,8 @@ public class inputMethodService extends InputMethodService
         currentLayout = pre.getInt("RADIO_INDEX_LAYOUT", KeyboardDefinitions.LAYOUT_QWERTY);
         currentSize = pre.getInt("SIZE", 1);
         currentLayer = KeyboardDefinitions.LAYER_MAIN;
-        capsLock = false;
+        shiftState   = CKKeyboardView.SHIFT_OFF;
+        ctrlActive   = false;
         soundOn = pre.getInt("SOUND", 1) == 1;
         vibratorOn = pre.getInt("VIBRATE", 1) == 1;
         previewEnabled = pre.getInt("PREVIEW", 1) == 1;
@@ -142,19 +145,39 @@ public class inputMethodService extends InputMethodService
 
         switch (code) {
 
-            case KeyData.CODE_DELETE:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+            // ── Modifier keys — never combined with Ctrl ───────────────────
+            case KeyData.CODE_SHIFT: {
+                long now = SystemClock.uptimeMillis();
+                if (shiftState == CKKeyboardView.SHIFT_LOCKED) {
+                    // Tap while locked → turn off
+                    shiftState = CKKeyboardView.SHIFT_OFF;
+                } else if (shiftState == CKKeyboardView.SHIFT_ON
+                        && (now - lastShiftTapMs) < DOUBLE_TAP_MS) {
+                    // Second tap within 400 ms → caps-lock
+                    shiftState = CKKeyboardView.SHIFT_LOCKED;
+                } else if (shiftState == CKKeyboardView.SHIFT_ON) {
+                    // Single tap while already on → turn off
+                    shiftState = CKKeyboardView.SHIFT_OFF;
+                } else {
+                    // Off → one-shot shift
+                    shiftState = CKKeyboardView.SHIFT_ON;
+                }
+                lastShiftTapMs = now;
+                ckKeyboardView.setShiftState(shiftState);
+                break;
+            }
+
+            case KeyData.CODE_CTRL:
+                ctrlActive = !ctrlActive;
+                ckKeyboardView.setCtrlActive(ctrlActive);
                 break;
 
-            case KeyData.CODE_DONE:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
+            case KeyData.CODE_ESC:
+                // Esc itself is never combined — just send it
+                sendDownUpKeyEvents(KeyEvent.KEYCODE_ESCAPE);
                 break;
 
-            case KeyData.CODE_SHIFT:
-                capsLock = !capsLock;
-                ckKeyboardView.setCapsLock(capsLock);
-                break;
-
+            // ── Layer / utility keys ───────────────────────────────────────
             case KeyData.CODE_SWITCH_ARROWS:
                 currentLayer = KeyboardDefinitions.LAYER_ARROWS;
                 rebuildKeyboard();
@@ -171,33 +194,88 @@ public class inputMethodService extends InputMethodService
                 startActivity(intent);
                 break;
 
+            // ── Keys that work both plain and as Ctrl+key ──────────────────
+            case KeyData.CODE_DELETE:
+                // Ctrl+Backspace = delete word backward
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_DEL);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+                break;
+
+            case KeyData.CODE_DONE:
+                // Ctrl+Enter used in many editors (run, submit, new line below)
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_ENTER);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
+                break;
+
             case KeyData.CODE_LEFT:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+                // Ctrl+Left = jump word left
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_DPAD_LEFT);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
                 break;
 
             case KeyData.CODE_RIGHT:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+                // Ctrl+Right = jump word right
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_DPAD_RIGHT);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
                 break;
 
             case KeyData.CODE_UP:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_UP);
+                // Ctrl+Up = scroll / move line up
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_DPAD_UP);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_UP);
                 break;
 
             case KeyData.CODE_DOWN:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_DOWN);
+                // Ctrl+Down = scroll / move line down
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_DPAD_DOWN);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_DOWN);
                 break;
 
+            case 9: // Tab — insert 4 spaces for indentation
+                if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_TAB);
+                else ic.commitText("    ", 1);
+                break;
+
+            // ── Regular character keys ─────────────────────────────────────
             default:
-                // Validate that code is a valid character (not a special control code)
-                if (code >= 0 && code <= 0x10FFFF) {
+                if (code < 0 || code > 0x10FFFF) break;
+
+                if (ctrlActive) {
+                    int keyCode = charToKeyCode(code);
+                    if (keyCode != -1) {
+                        sendCtrlKey(ic, keyCode);
+                    } else {
+                        // No mapping for this symbol — just cancel Ctrl
+                        ctrlActive = false;
+                        ckKeyboardView.setCtrlActive(false);
+                    }
+                } else {
                     char ch = (char) code;
-                    if (capsLock && Character.isLetter(ch)) {
+                    if (shiftState != CKKeyboardView.SHIFT_OFF && Character.isLetter(ch)) {
                         ch = Character.toUpperCase(ch);
+                        // One-shot shift: revert after a single letter
+                        if (shiftState == CKKeyboardView.SHIFT_ON) {
+                            shiftState = CKKeyboardView.SHIFT_OFF;
+                            ckKeyboardView.setShiftState(shiftState);
+                        }
                     }
                     ic.commitText(String.valueOf(ch), 1);
                 }
                 break;
         }
+    }
+
+    /**
+     * Send a Ctrl+keyCode key event pair with correct timestamps, then
+     * deactivate the one-shot Ctrl modifier.
+     */
+    private void sendCtrlKey(InputConnection ic, int keyCode) {
+        long now = SystemClock.uptimeMillis();
+        int meta = KeyEvent.META_CTRL_ON | KeyEvent.META_CTRL_LEFT_ON;
+        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_DOWN, keyCode, 0, meta));
+        ic.sendKeyEvent(new KeyEvent(now, now, KeyEvent.ACTION_UP,   keyCode, 0, meta));
+        ctrlActive = false;
+        ckKeyboardView.setCtrlActive(false);
     }
 
     @Override
@@ -253,7 +331,7 @@ public class inputMethodService extends InputMethodService
             return;
         ckKeyboardView.setKeyboardLayout(
                 KeyboardDefinitions.build(currentLayout, currentLayer, currentSize));
-        ckKeyboardView.setCapsLock(capsLock);
+        ckKeyboardView.setShiftState(shiftState);
     }
 
     /**
@@ -315,6 +393,38 @@ public class inputMethodService extends InputMethodService
             } catch (Exception e) {
                 // Silently ignore release errors
             }
+        }
+    }
+
+    /**
+     * Maps a Unicode character code to the matching Android KeyEvent keycode
+     * so Ctrl+key events can be dispatched correctly.
+     * Returns -1 if there is no known mapping.
+     *
+     * Covers every key visible on the keyboard that has a standard Android keycode:
+     *   letters, digits, and the punctuation/symbol keys used in common editor shortcuts.
+     */
+    private static int charToKeyCode(int code) {
+        // a-z / A-Z
+        if (code >= 'a' && code <= 'z') return KeyEvent.KEYCODE_A + (code - 'a');
+        if (code >= 'A' && code <= 'Z') return KeyEvent.KEYCODE_A + (code - 'A');
+        // 0-9
+        if (code >= '0' && code <= '9') return KeyEvent.KEYCODE_0 + (code - '0');
+        // Symbol keys present on this keyboard
+        switch (code) {
+            case 32: return KeyEvent.KEYCODE_SPACE;          // Ctrl+Space (autocomplete)
+            case 39: return KeyEvent.KEYCODE_APOSTROPHE;     // Ctrl+'
+            case 44: return KeyEvent.KEYCODE_COMMA;          // Ctrl+,
+            case 45: return KeyEvent.KEYCODE_MINUS;          // Ctrl+-    (zoom out / fold)
+            case 46: return KeyEvent.KEYCODE_PERIOD;         // Ctrl+.
+            case 47: return KeyEvent.KEYCODE_SLASH;          // Ctrl+/    (toggle comment)
+            case 59: return KeyEvent.KEYCODE_SEMICOLON;      // Ctrl+;
+            case 61: return KeyEvent.KEYCODE_EQUALS;         // Ctrl+=    (zoom in)
+            case 91: return KeyEvent.KEYCODE_LEFT_BRACKET;   // Ctrl+[    (dedent)
+            case 92: return KeyEvent.KEYCODE_BACKSLASH;      // Ctrl+\
+            case 93: return KeyEvent.KEYCODE_RIGHT_BRACKET;  // Ctrl+]    (indent)
+            case 96: return KeyEvent.KEYCODE_GRAVE;          // Ctrl+`    (open terminal)
+            default: return -1;
         }
     }
 

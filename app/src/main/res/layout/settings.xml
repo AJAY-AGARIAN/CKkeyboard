@@ -13,23 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <!-- Sample AdMob Banner ID:  ads:adUnitId="ca-app-pub-3940256099942544/6300978111" -->
-            <!--original AdMob Banner ID: ads:adUnitId="ca-app-pub-6204356404799936/7323653457"-->
-
-            <com.google.android.gms.ads.AdView
-                xmlns:ads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/adViewSetting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                ads:adSize="BANNER"
-                ads:adUnitId="ca-app-pub-6204356404799936/7323653457" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,29 +37,6 @@
                 android:textSize="25sp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
-
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:src="@drawable/caution"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="@string/caution"
-                android:textSize="12sp" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -233,8 +193,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SMALL"
-                    android:textSize="12sp"
+                    android:text="XS"
+                    android:textSize="11sp"
                     android:layout_marginStart="30dp"/>
                 <Space
                     android:layout_width="0dp"
@@ -243,7 +203,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MEDIUM"
+                    android:text="S"
+                    android:textSize="12sp"/>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M"
                     android:textSize="14sp"/>
                 <Space
                     android:layout_width="0dp"
@@ -252,7 +221,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LARGE"
+                    android:text="L"
                     android:layout_marginEnd="30dp"
                     android:textSize="16sp"/>
             </LinearLayout>

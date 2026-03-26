@@ -148,7 +148,7 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/caution"
+                android:src="@drawable/information"
                 android:layout_gravity="center"/>
             <TextView
                 android:layout_width="wrap_content"
