@@ -14,11 +14,7 @@
         android:roundIcon="@mipmap/codinglogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:dataExtractionRules="@xml/data_extraction_rules"
         tools:targetApi="s">
-        <activity
-            android:name=".dialogBox"
-            android:exported="true" />
         <activity
             android:name=".attribution"
             android:screenOrientation="portrait" />
@@ -28,6 +24,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

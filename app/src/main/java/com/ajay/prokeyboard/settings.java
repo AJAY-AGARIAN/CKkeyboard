@@ -28,6 +28,7 @@ public class settings extends AppCompatActivity {
     RadioGroup layoutRadioGroup;
     final String RADIO_INDEX_COLOUR = "RADIO_INDEX_COLOUR";
     final String RADIO_INDEX_LAYOUT = "RADIO_INDEX_LAYOUT";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -38,6 +39,7 @@ public class settings extends AppCompatActivity {
         if (seekBar != null) {
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 int progressChangedValue = seekBar.getProgress();
+
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     progressChangedValue = progress;
@@ -54,16 +56,33 @@ public class settings extends AppCompatActivity {
                 }
             });
         }
-       colorRadioGroup = (RadioGroup) findViewById(R.id.radioGroupColour);
-       colorRadioGroup.setOnCheckedChangeListener(radioGroupColour);
+        colorRadioGroup = (RadioGroup) findViewById(R.id.radioGroupColour);
+        colorRadioGroup.setOnCheckedChangeListener(radioGroupColour);
 
         layoutRadioGroup = (RadioGroup) findViewById(R.id.keylayouts);
         layoutRadioGroup.setOnCheckedChangeListener(radioGroupLayout);
 
         LoadPreferences();
 
-        //ads
-        //ads
+        // Set up checkbox listeners
+        CheckBox soundCheckBox = findViewById(R.id.sound);
+        CheckBox vibrateCheckBox = findViewById(R.id.vibrate);
+        CheckBox previewCheckBox = findViewById(R.id.preview);
+
+        soundCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SavePreferences("SOUND", isChecked ? 1 : 0);
+        });
+
+        vibrateCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SavePreferences("VIBRATE", isChecked ? 1 : 0);
+        });
+
+        previewCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SavePreferences("PREVIEW", isChecked ? 1 : 0);
+        });
+
+        // ads
+        // ads
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
@@ -74,28 +93,28 @@ public class settings extends AppCompatActivity {
         mAdView.loadAd(adRequest);
     }
 
-    //color
-        RadioGroup.OnCheckedChangeListener  radioGroupColour= new RadioGroup.OnCheckedChangeListener() {
+    // color
+    RadioGroup.OnCheckedChangeListener radioGroupColour = new RadioGroup.OnCheckedChangeListener() {
 
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                    RadioButton checkedRadioButtonColour = (RadioButton) colorRadioGroup.findViewById(checkedId);
-                    int checkedIndexColour = colorRadioGroup.indexOfChild(checkedRadioButtonColour);
-                    SavePreferences(RADIO_INDEX_COLOUR, checkedIndexColour);
-                }
-            };
-    //layout
-    RadioGroup.OnCheckedChangeListener  radioGroupLayout= new RadioGroup.OnCheckedChangeListener() {
+            RadioButton checkedRadioButtonColour = (RadioButton) colorRadioGroup.findViewById(checkedId);
+            int checkedIndexColour = colorRadioGroup.indexOfChild(checkedRadioButtonColour);
+            SavePreferences(RADIO_INDEX_COLOUR, checkedIndexColour);
+        }
+    };
+    // layout
+    RadioGroup.OnCheckedChangeListener radioGroupLayout = new RadioGroup.OnCheckedChangeListener() {
 
-                @Override
-                public void onCheckedChanged(RadioGroup group, int checkedId) {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                    RadioButton checkedRadioButtonLayout = (RadioButton) layoutRadioGroup.findViewById(checkedId);
-                    int checkedIndexLayout = layoutRadioGroup.indexOfChild(checkedRadioButtonLayout);
-                    SavePreferences(RADIO_INDEX_LAYOUT, checkedIndexLayout);
-                }
-            };
+            RadioButton checkedRadioButtonLayout = (RadioButton) layoutRadioGroup.findViewById(checkedId);
+            int checkedIndexLayout = layoutRadioGroup.indexOfChild(checkedRadioButtonLayout);
+            SavePreferences(RADIO_INDEX_LAYOUT, checkedIndexLayout);
+        }
+    };
 
     private void SavePreferences(String key, int value) {
         SharedPreferences sharedPreferences = getSharedPreferences("MY_SHARED_PREF", MODE_PRIVATE);
@@ -108,7 +127,8 @@ public class settings extends AppCompatActivity {
         CheckBox preview = findViewById(R.id.preview);
         if (preview.isChecked()) {
             SavePreferences("PREVIEW", 1);
-        } else SavePreferences("PREVIEW", 0);
+        } else
+            SavePreferences("PREVIEW", 0);
         closeKeyboard(v);
     }
 
@@ -116,7 +136,8 @@ public class settings extends AppCompatActivity {
         CheckBox preview = findViewById(R.id.sound);
         if (preview.isChecked()) {
             SavePreferences("SOUND", 1);
-        } else SavePreferences("SOUND", 0);
+        } else
+            SavePreferences("SOUND", 0);
         closeKeyboard(v);
     }
 
@@ -124,7 +145,8 @@ public class settings extends AppCompatActivity {
         CheckBox preview = findViewById(R.id.vibrate);
         if (preview.isChecked()) {
             SavePreferences("VIBRATE", 1);
-        } else SavePreferences("VIBRATE", 0);
+        } else
+            SavePreferences("VIBRATE", 0);
         closeKeyboard(v);
     }
 
@@ -142,7 +164,7 @@ public class settings extends AppCompatActivity {
         int setPreview = sharedPreferences.getInt("PREVIEW", 1);
         int setSound = sharedPreferences.getInt("SOUND", 1);
         int setVibrator = sharedPreferences.getInt("VIBRATE", 1);
-        int setSize     = sharedPreferences.getInt("SIZE"   , 1);
+        int setSize = sharedPreferences.getInt("SIZE", 1);
 
         CheckBox preview = (CheckBox) findViewById(R.id.preview);
         CheckBox sound = (CheckBox) findViewById(R.id.sound);

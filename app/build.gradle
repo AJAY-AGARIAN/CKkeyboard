@@ -1,20 +1,27 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 35
     defaultConfig {
         applicationId "com.ajay.prokeyboard"
         minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 12
-        versionName "4.6"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 35
+        //Change this
+        versionCode 13
+        //And this for every production release
+        versionName "4.7"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            // Enabling code shrinking, obfuscation, and optimization for the release build
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            // Optional: Add debug specific configurations here if needed
         }
     }
     namespace 'com.ajay.prokeyboard'
@@ -22,14 +29,21 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support.constraint:constraint-layout:2.0.4'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.9.0'
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.gms:play-services-ads:22.2.0'
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Use only the latest version of constraint layout
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+
+    implementation 'com.google.android.material:material:1.12.0'
+    testImplementation 'junit:junit:4.13.2'
+
+    // Migrate to androidx.test for instrumentation testing
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
     implementation 'androidx.multidex:multidex:2.0.1'
 }

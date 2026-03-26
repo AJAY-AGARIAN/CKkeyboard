@@ -8,8 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
-public class dialogBox extends Dialog implements
-        android.view.View.OnClickListener {
+public class dialogBox extends Dialog {
 
     public Activity c;
     public Dialog d;
@@ -20,6 +19,11 @@ public class dialogBox extends Dialog implements
         this.c = a;
     }
 
+    // Default constructor required by Android system
+    public dialogBox() {
+        super(null);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,23 +31,9 @@ public class dialogBox extends Dialog implements
         setContentView(R.layout.dialog_box);
         continueBtn = findViewById(R.id.continueBtn);
         continueBtn.setOnClickListener(v -> {
-
             Intent intent = new Intent(android.provider.Settings.ACTION_INPUT_METHOD_SETTINGS);
             c.startActivity(intent);
             dismiss();
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.continueBtn:
-                c.finish();
-                dismiss();
-                break;
-            default:
-                break;
-        }
-        dismiss();
     }
 }
