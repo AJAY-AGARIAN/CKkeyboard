@@ -53,6 +53,13 @@
     <string name="preview">PREVIEW</string>
     <string name="preview2">Display preview of key pressed?</string>
     <string name="settings">Settings</string>
+    <string name="auto_close_brackets">AUTO-CLOSE BRACKETS</string>
+    <string name="auto_close_brackets2">Auto-insert matching ), ], } after (, [, {</string>
+    <string name="auto_close_quotes">AUTO-CLOSE QUOTES</string>
+    <string name="auto_close_quotes2">Auto-insert matching " or \' when typing quotes</string>
+    <string name="caps_lock_style_label">CAPS LOCK STYLE</string>
+    <string name="caps_gboard">GBOARD (double-tap Shift)</string>
+    <string name="caps_laptop">LAPTOP (single-tap toggles)</string>
     <string name="share">Share</string>
     <string name="about">About</string>
     <string name="feedback">Send Feedback</string>

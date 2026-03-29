@@ -37,6 +37,9 @@ public class inputMethodService extends InputMethodService
     private boolean soundOn = true;
     private boolean vibratorOn = true;
     private boolean previewEnabled = true;
+    private boolean autoCloseBrackets = false;
+    private boolean autoCloseQuotes = false;
+    private int capsLockStyle = 0; // 0=gboard (double-tap), 1=laptop (toggle)
     private MediaPlayer mediaPlayer; // Reusable sound player
 
     // ─────────────────────────────────────────────────────────────────────
@@ -55,6 +58,9 @@ public class inputMethodService extends InputMethodService
         soundOn = pre.getInt("SOUND", 1) == 1;
         vibratorOn = pre.getInt("VIBRATE", 1) == 1;
         previewEnabled = pre.getInt("PREVIEW", 1) == 1;
+        autoCloseBrackets = pre.getInt("AUTO_CLOSE_BRACKETS", 0) == 1;
+        autoCloseQuotes = pre.getInt("AUTO_CLOSE_QUOTES", 0) == 1;
+        capsLockStyle = pre.getInt("CAPS_LOCK_STYLE", 0);
         currentColor = pre.getInt("RADIO_INDEX_COLOUR", 0);
 
         ckKeyboardView = new CKKeyboardView(this);
@@ -82,6 +88,9 @@ public class inputMethodService extends InputMethodService
         boolean newVibrate = pre.getInt("VIBRATE", 1) == 1;
         boolean newPreview = pre.getInt("PREVIEW", 1) == 1;
         int newColor = pre.getInt("RADIO_INDEX_COLOUR", 0);
+        autoCloseBrackets = pre.getInt("AUTO_CLOSE_BRACKETS", 0) == 1;
+        autoCloseQuotes = pre.getInt("AUTO_CLOSE_QUOTES", 0) == 1;
+        capsLockStyle = pre.getInt("CAPS_LOCK_STYLE", 0);
 
         // Check if keyboard layout or size changed
         boolean layoutChanged = (newLayout != currentLayout);
@@ -147,22 +156,26 @@ public class inputMethodService extends InputMethodService
 
             // ── Modifier keys — never combined with Ctrl ───────────────────
             case KeyData.CODE_SHIFT: {
-                long now = SystemClock.uptimeMillis();
-                if (shiftState == CKKeyboardView.SHIFT_LOCKED) {
-                    // Tap while locked → turn off
-                    shiftState = CKKeyboardView.SHIFT_OFF;
-                } else if (shiftState == CKKeyboardView.SHIFT_ON
-                        && (now - lastShiftTapMs) < DOUBLE_TAP_MS) {
-                    // Second tap within 400 ms → caps-lock
-                    shiftState = CKKeyboardView.SHIFT_LOCKED;
-                } else if (shiftState == CKKeyboardView.SHIFT_ON) {
-                    // Single tap while already on → turn off
-                    shiftState = CKKeyboardView.SHIFT_OFF;
+                if (capsLockStyle == 1) {
+                    // Laptop style: single tap toggles caps lock on/off, no one-shot
+                    shiftState = (shiftState == CKKeyboardView.SHIFT_LOCKED)
+                            ? CKKeyboardView.SHIFT_OFF
+                            : CKKeyboardView.SHIFT_LOCKED;
                 } else {
-                    // Off → one-shot shift
-                    shiftState = CKKeyboardView.SHIFT_ON;
+                    // Gboard style (default): off→one-shot, one-shot→off or double-tap→lock, locked→off
+                    long now = SystemClock.uptimeMillis();
+                    if (shiftState == CKKeyboardView.SHIFT_LOCKED) {
+                        shiftState = CKKeyboardView.SHIFT_OFF;
+                    } else if (shiftState == CKKeyboardView.SHIFT_ON
+                            && (now - lastShiftTapMs) < DOUBLE_TAP_MS) {
+                        shiftState = CKKeyboardView.SHIFT_LOCKED;
+                    } else if (shiftState == CKKeyboardView.SHIFT_ON) {
+                        shiftState = CKKeyboardView.SHIFT_OFF;
+                    } else {
+                        shiftState = CKKeyboardView.SHIFT_ON;
+                    }
+                    lastShiftTapMs = now;
                 }
-                lastShiftTapMs = now;
                 ckKeyboardView.setShiftState(shiftState);
                 break;
             }
@@ -204,7 +217,7 @@ public class inputMethodService extends InputMethodService
             case KeyData.CODE_DONE:
                 // Ctrl+Enter used in many editors (run, submit, new line below)
                 if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_ENTER);
-                else sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
+                else handleEnter(ic);
                 break;
 
             case KeyData.CODE_LEFT:
@@ -259,9 +272,83 @@ public class inputMethodService extends InputMethodService
                             ckKeyboardView.setShiftState(shiftState);
                         }
                     }
-                    ic.commitText(String.valueOf(ch), 1);
+                    // Auto-close on overtype: skip over the closing char if already there
+                    if (shouldOvertype(ch)) {
+                        CharSequence next = ic.getTextAfterCursor(1, 0);
+                        if (next != null && next.length() > 0 && next.charAt(0) == ch) {
+                            sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+                            break;
+                        }
+                    }
+                    // Auto-close brackets/quotes: insert pair, cursor placed inside
+                    char closing = getAutoPair(ch);
+                    if (closing != 0) {
+                        ic.commitText(String.valueOf(ch) + closing, 1);
+                        // commitText always places cursor after all committed text,
+                        // so move left once to land between the pair
+                        sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+                    } else {
+                        ic.commitText(String.valueOf(ch), 1);
+                    }
                 }
                 break;
+        }
+    }
+
+    /**
+     * Handle Enter: commit newline + current line's indentation.
+     * If the line ends with {, (, or :, add one extra indent level (4 spaces).
+     */
+    private void handleEnter(InputConnection ic) {
+        CharSequence before = ic.getTextBeforeCursor(500, 0);
+        String indent = "";
+        if (before != null) {
+            String text = before.toString();
+            int lineStart = text.lastIndexOf('\n') + 1;
+            String currentLine = text.substring(lineStart);
+            // Extract leading whitespace
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < currentLine.length(); i++) {
+                char c = currentLine.charAt(i);
+                if (c == ' ' || c == '\t') sb.append(c);
+                else break;
+            }
+            indent = sb.toString();
+            // Find last non-whitespace char
+            String trimmed = currentLine;
+            int end = trimmed.length() - 1;
+            while (end >= 0 && (trimmed.charAt(end) == ' ' || trimmed.charAt(end) == '\t')) end--;
+            if (end >= 0) {
+                char last = trimmed.charAt(end);
+                if (last == '{' || last == '(' || last == ':') {
+                    indent += "    ";
+                }
+            }
+        }
+        ic.commitText("\n" + indent, 1);
+    }
+
+    /** Returns the auto-pair closing character if the setting is enabled, else 0. */
+    private char getAutoPair(char ch) {
+        if (autoCloseBrackets) {
+            switch (ch) {
+                case '(': return ')';
+                case '[': return ']';
+                case '{': return '}';
+            }
+        }
+        if (autoCloseQuotes && (ch == '"' || ch == '\'')) {
+            return ch;
+        }
+        return 0;
+    }
+
+    /** Returns true if typing this char should skip over it when it already follows the cursor. */
+    private boolean shouldOvertype(char ch) {
+        switch (ch) {
+            case ')': case ']': case '}': return autoCloseBrackets;
+            case '"': case '\'': return autoCloseQuotes;
+            default: return false;
         }
     }
 
@@ -342,22 +429,19 @@ public class inputMethodService extends InputMethodService
         if (ckKeyboardView == null)
             return;
         switch (colorIndex) {
-            case 1: // White
+            case 1: // Grey
                 ckKeyboardView.setTheme(0xFFB3B6B7, 0xFFFFFFFF, 0xFFD0D3D4, 0xFF000000);
                 break;
-            case 2: // Blue
-                ckKeyboardView.setTheme(0xFF2E86C1, 0xFF3498DB, 0xFF1A5276, 0xFFFFFFFF);
+            case 2: // Navy
+                ckKeyboardView.setTheme(0xFF0D1B2A, 0xFF1B2A3B, 0xFF253545, 0xFFFFFFFF);
                 break;
-            case 3: // Red
-                ckKeyboardView.setTheme(0xFFE74C3C, 0xFFEC7063, 0xFFC0392B, 0xFFFFFFFF);
+            case 3: // Hacker Green
+                ckKeyboardView.setTheme(0xFF0A0A0A, 0xFF1A1A1A, 0xFF004400, 0xFF00FF41);
                 break;
-            case 4: // Green
-                ckKeyboardView.setTheme(0xFF27AE60, 0xFF52BE80, 0xFF1E8449, 0xFFFFFFFF);
+            case 4: // AMOLED Black
+                ckKeyboardView.setTheme(0xFF000000, 0xFF111111, 0xFF222222, 0xFFFFFFFF);
                 break;
-            case 5: // Yellow
-                ckKeyboardView.setTheme(0xFFF1C40F, 0xFFF4D03F, 0xFFD4AC0D, 0xFF000000);
-                break;
-            default: // Dark (0) — default
+            default: // Dark (0)
                 ckKeyboardView.setTheme(0xFF17202A, 0xFF283747, 0xFF34495E, 0xFFFFFFFF);
                 break;
         }

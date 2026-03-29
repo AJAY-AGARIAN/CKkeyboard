@@ -85,6 +85,78 @@
                 android:layout_marginStart="25dp"/>
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TYPING ASSISTANCE"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/autoCloseBrackets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/auto_close_brackets"
+                android:textSize="15sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/auto_close_brackets2"
+                android:layout_marginStart="25dp"/>
+
+            <CheckBox
+                android:id="@+id/autoCloseQuotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/auto_close_quotes"
+                android:textSize="15sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/auto_close_quotes2"
+                android:layout_marginStart="25dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/caps_lock_style_label"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"/>
+
+        <RadioGroup
+            android:id="@+id/capsLockStyleGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
+            <RadioButton
+                android:id="@+id/capsGboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/caps_gboard"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/capsLaptop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/caps_laptop"/>
+        </RadioGroup>
 
         <TextView
             android:layout_width="wrap_content"
@@ -110,7 +182,7 @@
                 <RadioButton
                     android:id="@+id/backRadio"
                     android:layout_width="90dp"
-                    android:text="BLACK"
+                    android:text="DARK"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:layout_height="wrap_content"
@@ -128,34 +200,29 @@
                 <RadioButton
                     android:id="@+id/blueRadio"
                     android:layout_width="90dp"
-                    android:text="BLUE"
+                    android:text="NAVY"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bluechoose"
                     android:layout_marginEnd="5dp"/>
                 <RadioButton
                     android:id="@+id/redRadio"
                     android:layout_width="90dp"
-                    android:text="RED"
+                    android:text="HACKER"
                     android:textAlignment="center"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:background="@drawable/choosered"
                     android:layout_marginEnd="5dp"/>
                 <RadioButton
                     android:id="@+id/greenRadio"
                     android:layout_width="90dp"
-                    android:text="GREEN"
+                    android:text="AMOLED"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/greenchoose"
-                    android:layout_marginEnd="5dp"/>
-                <RadioButton
-                    android:id="@+id/yellowRadio"
-                    android:layout_width="90dp"
-                    android:text="YELLOW"
-                    android:textAlignment="center"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/yellowchoose"/>
+                    android:background="@drawable/greenchoose"/>
             </RadioGroup>
         </HorizontalScrollView>
 
@@ -276,6 +343,22 @@
                     android:id="@+id/qwertz"
                     android:layout_width="100dp"
                     android:text="QWERTZ"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/roundbtn"
+                    android:layout_marginEnd="5dp"/>
+                <RadioButton
+                    android:id="@+id/colemak"
+                    android:layout_width="100dp"
+                    android:text="COLEMAK"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/roundbtn"
+                    android:layout_marginEnd="5dp"/>
+                <RadioButton
+                    android:id="@+id/colemakDh"
+                    android:layout_width="110dp"
+                    android:text="COLEMAK-DH"
                     android:textAlignment="center"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundbtn"/>

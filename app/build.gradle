@@ -9,11 +9,8 @@ if (keystorePropertiesFile.exists()) {
 android {
     compileSdk 35
     defaultConfig {
-        applicationId "com.ajay.prokeyboard"
         minSdk 21
         targetSdk 35
-        versionCode 14
-        versionName "5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -26,9 +23,26 @@ android {
             }
         }
     }
+    flavorDimensions "version"
+    productFlavors {
+        free {
+            dimension "version"
+            applicationId "com.ajay.prokeyboard"
+            versionCode 15
+            versionName "5.1"
+        }
+        paid {
+            dimension "version"
+            applicationId "com.ajay.paidCk"
+            versionCode 5
+            versionName "2.1"
+        }
+    }
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -37,6 +51,9 @@ android {
         }
     }
     namespace 'com.ajay.prokeyboard'
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {

@@ -17,6 +17,7 @@ public class settings extends AppCompatActivity {
     SeekBar seekBar;
     RadioGroup colorRadioGroup;
     RadioGroup layoutRadioGroup;
+    RadioGroup capsLockRadioGroup;
     final String RADIO_INDEX_COLOUR = "RADIO_INDEX_COLOUR";
     final String RADIO_INDEX_LAYOUT = "RADIO_INDEX_LAYOUT";
 
@@ -52,12 +53,20 @@ public class settings extends AppCompatActivity {
         layoutRadioGroup = (RadioGroup) findViewById(R.id.keylayouts);
         layoutRadioGroup.setOnCheckedChangeListener(radioGroupLayout);
 
+        capsLockRadioGroup = findViewById(R.id.capsLockStyleGroup);
+        capsLockRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            int index = capsLockRadioGroup.indexOfChild(capsLockRadioGroup.findViewById(checkedId));
+            SavePreferences("CAPS_LOCK_STYLE", index);
+        });
+
         LoadPreferences();
 
         // Set up checkbox listeners
         CheckBox soundCheckBox = findViewById(R.id.sound);
         CheckBox vibrateCheckBox = findViewById(R.id.vibrate);
         CheckBox previewCheckBox = findViewById(R.id.preview);
+        CheckBox autoCloseBracketsCheckBox = findViewById(R.id.autoCloseBrackets);
+        CheckBox autoCloseQuotesCheckBox = findViewById(R.id.autoCloseQuotes);
 
         soundCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SavePreferences("SOUND", isChecked ? 1 : 0);
@@ -69,6 +78,14 @@ public class settings extends AppCompatActivity {
 
         previewCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SavePreferences("PREVIEW", isChecked ? 1 : 0);
+        });
+
+        autoCloseBracketsCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SavePreferences("AUTO_CLOSE_BRACKETS", isChecked ? 1 : 0);
+        });
+
+        autoCloseQuotesCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SavePreferences("AUTO_CLOSE_QUOTES", isChecked ? 1 : 0);
         });
     }
 
@@ -148,28 +165,28 @@ public class settings extends AppCompatActivity {
         int setSound = sharedPreferences.getInt("SOUND", 1);
         int setVibrator = sharedPreferences.getInt("VIBRATE", 1);
         int setSize = sharedPreferences.getInt("SIZE", 1);
+        int setAutoCloseBrackets = sharedPreferences.getInt("AUTO_CLOSE_BRACKETS", 0);
+        int setAutoCloseQuotes = sharedPreferences.getInt("AUTO_CLOSE_QUOTES", 0);
+        int setCapsLockStyle = sharedPreferences.getInt("CAPS_LOCK_STYLE", 0);
 
         CheckBox preview = (CheckBox) findViewById(R.id.preview);
         CheckBox sound = (CheckBox) findViewById(R.id.sound);
         CheckBox vibrate = (CheckBox) findViewById(R.id.vibrate);
+        CheckBox autoCloseBrackets = (CheckBox) findViewById(R.id.autoCloseBrackets);
+        CheckBox autoCloseQuotes = (CheckBox) findViewById(R.id.autoCloseQuotes);
         SeekBar size = (SeekBar) findViewById(R.id.seekBar);
 
-        if (setPreview == 1)
-            preview.setChecked(true);
-        else
-            preview.setChecked(false);
-
-        if (setSound == 1)
-            sound.setChecked(true);
-        else
-            sound.setChecked(false);
-
-        if (setVibrator == 1)
-            vibrate.setChecked(true);
-        else
-            vibrate.setChecked(false);
-
+        preview.setChecked(setPreview == 1);
+        sound.setChecked(setSound == 1);
+        vibrate.setChecked(setVibrator == 1);
+        autoCloseBrackets.setChecked(setAutoCloseBrackets == 1);
+        autoCloseQuotes.setChecked(setAutoCloseQuotes == 1);
         size.setProgress(setSize);
+
+        if (setCapsLockStyle >= 0 && setCapsLockStyle < capsLockRadioGroup.getChildCount()) {
+            RadioButton btn = (RadioButton) capsLockRadioGroup.getChildAt(setCapsLockStyle);
+            if (btn != null) btn.setChecked(true);
+        }
     }
 
     public void closeKeyboard(View v) {

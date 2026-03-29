@@ -39,7 +39,7 @@
 
         <service
             android:name=".inputMethodService"
-            android:label="Coding Keyboard"
+            android:label="@string/app_name"
             android:description="@string/aboutText"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="true">

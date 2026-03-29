@@ -10,14 +10,17 @@
     <color name="roundbtncolor">#AED6F1</color>
     <color name="textcolor">#85929E</color>
     <color name="bgcpress">#283747</color>
-    <color name="red">#E74C3C</color>
-    <color name="redpress">#EC7063</color>
-    <color name="blue">#2E86C1</color>
-    <color name="bluepress">#3498DB</color>
-    <color name="yellow">#F1C40F</color>
-    <color name="yellowpress">#F4D03F</color>
-    <color name="green">#27AE60</color>
-    <color name="greenpress">#52BE80</color>
+    <color name="navy">#0D1B2A</color>
+    <color name="navyKey">#1B2A3B</color>
+    <color name="navyPress">#253545</color>
+    <color name="navySwatch">#1B2A3B</color>
+    <color name="hackerGreenBg">#0A0A0A</color>
+    <color name="hackerGreenKey">#1A1A1A</color>
+    <color name="hackerGreenPress">#004400</color>
+    <color name="hackerGreenText">#00FF41</color>
+    <color name="hackerGreenSwatch">#00FF41</color>
+    <color name="amoledKey">#111111</color>
+    <color name="amoledPress">#222222</color>
     <color name="grey">#B3B6B7</color>
     <color name="greypress">#D0D3D4</color>
 </resources>
