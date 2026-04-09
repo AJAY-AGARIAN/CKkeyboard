@@ -59,6 +59,9 @@ public class settings extends AppCompatActivity {
             SavePreferences("CAPS_LOCK_STYLE", index);
         });
 
+        AdManager.init(this);
+        AdManager.loadBanner(this, R.id.settings_banner_ad);
+
         LoadPreferences();
 
         // Set up checkbox listeners
@@ -195,4 +198,21 @@ public class settings extends AppCompatActivity {
         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AdManager.resumeBanner(this, R.id.settings_banner_ad);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AdManager.pauseBanner(this, R.id.settings_banner_ad);
+    }
+
+    @Override
+    protected void onDestroy() {
+        AdManager.destroyBanner(this, R.id.settings_banner_ad);
+        super.onDestroy();
+    }
 }

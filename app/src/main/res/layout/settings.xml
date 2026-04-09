@@ -365,6 +365,13 @@
             </RadioGroup>
         </HorizontalScrollView>
 
+        <!-- Placeholder so settings.java compiles in paid flavor (AdManager is a no-op) -->
+        <View
+            android:id="@+id/settings_banner_ad"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
     </ScrollView>

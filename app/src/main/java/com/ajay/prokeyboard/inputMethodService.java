@@ -1,5 +1,7 @@
 package com.ajay.prokeyboard;
 
+// import android.content.ClipData;          // [CLIPBOARD - disabled]
+// import android.content.ClipboardManager;  // [CLIPBOARD - disabled]
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,14 +11,23 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+// import android.view.Gravity;    // [CLIPBOARD - disabled]
 import android.view.KeyEvent;
 import android.view.View;
+// import android.view.ViewGroup;  // [CLIPBOARD - disabled]
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+// import android.widget.LinearLayout;  // [CLIPBOARD - disabled]
+// import android.widget.PopupWindow;   // [CLIPBOARD - disabled]
+// import android.widget.TextView;      // [CLIPBOARD - disabled]
 
 import com.ajay.prokeyboard.keyboard.CKKeyboardView;
+// import com.ajay.prokeyboard.keyboard.ClipboardHistory;  // [CLIPBOARD - disabled]
 import com.ajay.prokeyboard.keyboard.KeyData;
 import com.ajay.prokeyboard.keyboard.KeyboardDefinitions;
+
+// import java.util.List;  // [CLIPBOARD - disabled]
 
 public class inputMethodService extends InputMethodService
         implements CKKeyboardView.OnKeyListener {
@@ -42,6 +53,20 @@ public class inputMethodService extends InputMethodService
     private int capsLockStyle = 0; // 0=gboard (double-tap), 1=laptop (toggle)
     private MediaPlayer mediaPlayer; // Reusable sound player
 
+    // Terminal / code context detection
+    private boolean isTerminalContext = false;
+
+    // [CLIPBOARD - disabled]
+    // private ClipboardHistory clipboardHistory;
+    // private PopupWindow clipboardPopup;
+
+    // Known terminal package names
+    private static final String[] TERMINAL_PACKAGES = {
+        "com.termux", "jackpal.androidterm", "org.connectbot",
+        "com.jcraft.jsch", "com.arachnoid.sshelper", "com.sonelli.juicessh",
+        "de.mud.terminal", "com.server.auditor.ssh.client", "com.ericharlow.DroidTerm"
+    };
+
     // ─────────────────────────────────────────────────────────────────────
     // IME lifecycle
     // ─────────────────────────────────────────────────────────────────────
@@ -63,6 +88,8 @@ public class inputMethodService extends InputMethodService
         capsLockStyle = pre.getInt("CAPS_LOCK_STYLE", 0);
         currentColor = pre.getInt("RADIO_INDEX_COLOUR", 0);
 
+        // clipboardHistory = new ClipboardHistory(pre);  // [CLIPBOARD - disabled]
+
         ckKeyboardView = new CKKeyboardView(this);
         ckKeyboardView.setOnKeyListener(this);
         ckKeyboardView.setPreviewEnabled(previewEnabled);
@@ -71,6 +98,12 @@ public class inputMethodService extends InputMethodService
         rebuildKeyboard();
 
         return ckKeyboardView;
+    }
+
+    @Override
+    public void onStartInput(EditorInfo attr, boolean restarting) {
+        super.onStartInput(attr, restarting);
+        isTerminalContext = detectTerminalContext(attr);
     }
 
     @Override
@@ -207,6 +240,31 @@ public class inputMethodService extends InputMethodService
                 startActivity(intent);
                 break;
 
+            // ── Indent / Outdent ───────────────────────────────────────────
+            case KeyData.CODE_INDENT:
+                indentCurrentLine(ic);
+                break;
+
+            case KeyData.CODE_OUTDENT:
+                outdentCurrentLine(ic);
+                break;
+
+            // ── Undo / Redo ────────────────────────────────────────────────
+            case KeyData.CODE_UNDO:
+                sendCtrlKey(ic, KeyEvent.KEYCODE_Z);
+                break;
+
+            case KeyData.CODE_REDO:
+                sendCtrlKey(ic, KeyEvent.KEYCODE_Y);
+                break;
+
+            // ── Clipboard history ──────────────────────────────────────────
+            // [CLIPBOARD - disabled]
+            // case KeyData.CODE_CLIPBOARD:
+            //     snapshotClipboard();
+            //     showClipboardPopup();
+            //     break;
+
             // ── Keys that work both plain and as Ctrl+key ──────────────────
             case KeyData.CODE_DELETE:
                 // Ctrl+Backspace = delete word backward
@@ -217,6 +275,7 @@ public class inputMethodService extends InputMethodService
             case KeyData.CODE_DONE:
                 // Ctrl+Enter used in many editors (run, submit, new line below)
                 if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_ENTER);
+                else if (isTerminalContext) sendDownUpKeyEvents(KeyEvent.KEYCODE_ENTER);
                 else handleEnter(ic);
                 break;
 
@@ -244,9 +303,9 @@ public class inputMethodService extends InputMethodService
                 else sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_DOWN);
                 break;
 
-            case 9: // Tab — insert 4 spaces for indentation
+            case 9: // Tab
                 if (ctrlActive) sendCtrlKey(ic, KeyEvent.KEYCODE_TAB);
-                else ic.commitText("    ", 1);
+                else sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
                 break;
 
             // ── Regular character keys ─────────────────────────────────────
@@ -272,6 +331,11 @@ public class inputMethodService extends InputMethodService
                             ckKeyboardView.setShiftState(shiftState);
                         }
                     }
+                    // In terminal context: suppress auto-pair entirely
+                    if (isTerminalContext) {
+                        ic.commitText(String.valueOf(ch), 1);
+                        break;
+                    }
                     // Auto-close on overtype: skip over the closing char if already there
                     if (shouldOvertype(ch)) {
                         CharSequence next = ic.getTextAfterCursor(1, 0);
@@ -295,6 +359,214 @@ public class inputMethodService extends InputMethodService
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // Indent / Outdent
+    // ─────────────────────────────────────────────────────────────────────
+
+    /**
+     * Indents the current line by inserting 4 spaces at the start of the line,
+     * then restores the cursor to its original position + 4.
+     */
+    private void indentCurrentLine(InputConnection ic) {
+        CharSequence before = ic.getTextBeforeCursor(2000, 0);
+        if (before == null) return;
+        int charsBeforeCursor = before.length();
+        int lineStart = lastIndexOf(before, '\n') + 1; // 0 if no newline found
+        // Move cursor to line start
+        int stepsBack = charsBeforeCursor - lineStart;
+        if (stepsBack > 0) {
+            ic.setSelection(lineStart, lineStart); // not reliable in all editors
+            // Fallback: use key events
+            for (int i = 0; i < stepsBack; i++) sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+        }
+        ic.commitText("    ", 1);
+        // Restore cursor: move right stepsBack positions (we inserted 4 chars before)
+        for (int i = 0; i < stepsBack; i++) sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+    }
+
+    /**
+     * Outdents the current line by removing up to 4 leading spaces from the line start.
+     * Cursor is repositioned correctly.
+     */
+    private void outdentCurrentLine(InputConnection ic) {
+        CharSequence before = ic.getTextBeforeCursor(2000, 0);
+        if (before == null) return;
+        int charsBeforeCursor = before.length();
+        int lineStart = lastIndexOf(before, '\n') + 1;
+
+        // Read up to 4 chars at line start to count removable spaces
+        CharSequence lineHead = ic.getTextAfterCursor(4 + (charsBeforeCursor - lineStart), 0);
+        // We need to read from the line start position, so combine before+after approach
+        // Simpler: read current line from 'before'
+        String currentLine = before.subSequence(lineStart, charsBeforeCursor).toString();
+        int spacesToRemove = 0;
+        for (int i = 0; i < currentLine.length() && i < 4; i++) {
+            if (currentLine.charAt(i) == ' ') spacesToRemove++;
+            else break;
+        }
+        if (spacesToRemove == 0) return;
+
+        int stepsBack = charsBeforeCursor - lineStart;
+        // Move cursor to line start
+        for (int i = 0; i < stepsBack; i++) sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+        // Delete the leading spaces
+        for (int i = 0; i < spacesToRemove; i++) sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+        // Restore cursor (move back right, but only as far as original position allows)
+        int restoreSteps = Math.max(0, stepsBack - spacesToRemove);
+        for (int i = 0; i < restoreSteps; i++) sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+    }
+
+    private static int lastIndexOf(CharSequence cs, char c) {
+        for (int i = cs.length() - 1; i >= 0; i--) {
+            if (cs.charAt(i) == c) return i;
+        }
+        return -1;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Clipboard history popup  [CLIPBOARD - disabled]
+    // ─────────────────────────────────────────────────────────────────────
+
+    // private void snapshotClipboard() {
+    //     try {
+    //         ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+    //         if (cm != null && cm.hasPrimaryClip()) {
+    //             ClipData clip = cm.getPrimaryClip();
+    //             if (clip != null && clip.getItemCount() > 0) {
+    //                 CharSequence text = clip.getItemAt(0).coerceToText(this);
+    //                 if (text != null && text.length() > 0) {
+    //                     clipboardHistory.addEntry(text.toString());
+    //                 }
+    //             }
+    //         }
+    //     } catch (Exception ignored) {}
+    // }
+
+    // private void showClipboardPopup() {
+    //     if (ckKeyboardView == null) return;
+    //     dismissClipboardPopup();
+    //     LinearLayout root = new LinearLayout(this);
+    //     root.setOrientation(LinearLayout.VERTICAL);
+    //     root.setBackgroundColor(0xCC1A1A2E);
+    //     LinearLayout header = new LinearLayout(this);
+    //     header.setOrientation(LinearLayout.HORIZONTAL);
+    //     header.setBackgroundColor(0xFF0D1B2A);
+    //     header.setPadding(dp(12), 0, dp(4), 0);
+    //     header.setGravity(Gravity.CENTER_VERTICAL);
+    //     header.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(40)));
+    //     TextView title = new TextView(this);
+    //     title.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+    //     title.setText("Clipboard");
+    //     title.setTextColor(0xFFFFFFFF);
+    //     title.setTextSize(14f);
+    //     TextView closeBtn = new TextView(this);
+    //     closeBtn.setLayoutParams(new LinearLayout.LayoutParams(dp(40), dp(40)));
+    //     closeBtn.setText("\u2715");
+    //     closeBtn.setTextColor(0xFFFFFFFF);
+    //     closeBtn.setTextSize(18f);
+    //     closeBtn.setGravity(Gravity.CENTER);
+    //     closeBtn.setOnClickListener(v -> dismissClipboardPopup());
+    //     header.addView(title);
+    //     header.addView(closeBtn);
+    //     android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+    //     LinearLayout container = new LinearLayout(this);
+    //     container.setOrientation(LinearLayout.VERTICAL);
+    //     container.setPadding(dp(4), dp(4), dp(4), dp(4));
+    //     scroll.addView(container);
+    //     List<ClipboardHistory.Entry> entries = clipboardHistory.getEntries();
+    //     if (entries.isEmpty()) {
+    //         TextView empty = new TextView(this);
+    //         empty.setText("No clipboard history yet.");
+    //         empty.setTextColor(0xFFAAAAAA);
+    //         empty.setPadding(dp(12), dp(12), dp(12), dp(12));
+    //         container.addView(empty);
+    //     } else {
+    //         for (int i = 0; i < entries.size(); i++) {
+    //             container.addView(buildEntryRow(entries.get(i), i));
+    //         }
+    //     }
+    //     root.addView(header);
+    //     root.addView(scroll);
+    //     clipboardPopup = new PopupWindow(root,
+    //             ViewGroup.LayoutParams.MATCH_PARENT,
+    //             ViewGroup.LayoutParams.WRAP_CONTENT, true);
+    //     clipboardPopup.setElevation(8f);
+    //     clipboardPopup.showAtLocation(ckKeyboardView, Gravity.BOTTOM, 0, ckKeyboardView.getHeight());
+    // }
+
+    // private int dp(int dp) {
+    //     return Math.round(dp * getResources().getDisplayMetrics().density);
+    // }
+
+    // private View buildEntryRow(ClipboardHistory.Entry entry, int index) {
+    //     LinearLayout row = new LinearLayout(this);
+    //     row.setOrientation(LinearLayout.HORIZONTAL);
+    //     row.setPadding(8, 8, 8, 8);
+    //     row.setBackgroundColor(index % 2 == 0 ? 0xFF1A1A2E : 0xFF16213E);
+    //     TextView textView = new TextView(this);
+    //     textView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+    //     textView.setText(entry.text);
+    //     textView.setTextColor(0xFFEEEEEE);
+    //     textView.setTextSize(13f);
+    //     textView.setMaxLines(2);
+    //     textView.setEllipsize(android.text.TextUtils.TruncateAt.END);
+    //     textView.setPadding(4, 4, 4, 4);
+    //     TextView pinBtn = new TextView(this);
+    //     pinBtn.setText(entry.pinned ? "\uD83D\uDCCC" : "\uD83D\uDCCD");
+    //     pinBtn.setTextSize(16f);
+    //     pinBtn.setPadding(12, 4, 12, 4);
+    //     textView.setOnClickListener(v -> {
+    //         InputConnection ic = getCurrentInputConnection();
+    //         if (ic != null) ic.commitText(entry.text, 1);
+    //         dismissClipboardPopup();
+    //     });
+    //     pinBtn.setOnClickListener(v -> {
+    //         clipboardHistory.togglePin(index);
+    //         dismissClipboardPopup();
+    //         showClipboardPopup();
+    //     });
+    //     row.addView(textView);
+    //     row.addView(pinBtn);
+    //     return row;
+    // }
+
+    // private void dismissClipboardPopup() {
+    //     if (clipboardPopup != null && clipboardPopup.isShowing()) {
+    //         clipboardPopup.dismiss();
+    //     }
+    //     clipboardPopup = null;
+    // }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Terminal context detection
+    // ─────────────────────────────────────────────────────────────────────
+
+    private boolean detectTerminalContext(EditorInfo attr) {
+        if (attr == null) return false;
+
+        // Known terminal package names
+        String pkg = attr.packageName;
+        if (pkg != null) {
+            for (String terminal : TERMINAL_PACKAGES) {
+                if (pkg.equals(terminal) || pkg.startsWith(terminal)) return true;
+            }
+        }
+
+        // inputType == 0 → app opted out of IME suggestions (common in terminals)
+        int inputType = attr.inputType;
+        if (inputType == 0) return true;
+
+        // Visible password variation — used by some terminal prompts
+        int variation = inputType & android.text.InputType.TYPE_MASK_VARIATION;
+        if (variation == android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) return true;
+
+        return false;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Enter with auto-indent
+    // ─────────────────────────────────────────────────────────────────────
+
     /**
      * Handle Enter: commit newline + current line's indentation.
      * If the line ends with {, (, or :, add one extra indent level (4 spaces).
@@ -315,11 +587,10 @@ public class inputMethodService extends InputMethodService
             }
             indent = sb.toString();
             // Find last non-whitespace char
-            String trimmed = currentLine;
-            int end = trimmed.length() - 1;
-            while (end >= 0 && (trimmed.charAt(end) == ' ' || trimmed.charAt(end) == '\t')) end--;
+            int end = currentLine.length() - 1;
+            while (end >= 0 && (currentLine.charAt(end) == ' ' || currentLine.charAt(end) == '\t')) end--;
             if (end >= 0) {
-                char last = trimmed.charAt(end);
+                char last = currentLine.charAt(end);
                 if (last == '{' || last == '(' || last == ':') {
                     indent += "    ";
                 }
@@ -327,6 +598,10 @@ public class inputMethodService extends InputMethodService
         }
         ic.commitText("\n" + indent, 1);
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Auto-pair helpers
+    // ─────────────────────────────────────────────────────────────────────
 
     /** Returns the auto-pair closing character if the setting is enabled, else 0. */
     private char getAutoPair(char ch) {
@@ -352,6 +627,10 @@ public class inputMethodService extends InputMethodService
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // Ctrl key helper
+    // ─────────────────────────────────────────────────────────────────────
+
     /**
      * Send a Ctrl+keyCode key event pair with correct timestamps, then
      * deactivate the one-shot Ctrl modifier.
@@ -364,6 +643,10 @@ public class inputMethodService extends InputMethodService
         ctrlActive = false;
         ckKeyboardView.setCtrlActive(false);
     }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Swipe / drag / long-press handlers
+    // ─────────────────────────────────────────────────────────────────────
 
     @Override
     public void onKeyLongPress(int code) {
@@ -406,6 +689,13 @@ public class inputMethodService extends InputMethodService
         } catch (Exception e) {
             // Log error if needed
         }
+    }
+
+    @Override
+    public void onSpacebarCursorDrag(int direction) {
+        sendDownUpKeyEvents(direction > 0
+                ? KeyEvent.KEYCODE_DPAD_RIGHT
+                : KeyEvent.KEYCODE_DPAD_LEFT);
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -466,6 +756,7 @@ public class inputMethodService extends InputMethodService
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // dismissClipboardPopup();  // [CLIPBOARD - disabled]
         // Release mediaPlayer resources
         if (mediaPlayer != null) {
             try {
@@ -484,9 +775,6 @@ public class inputMethodService extends InputMethodService
      * Maps a Unicode character code to the matching Android KeyEvent keycode
      * so Ctrl+key events can be dispatched correctly.
      * Returns -1 if there is no known mapping.
-     *
-     * Covers every key visible on the keyboard that has a standard Android keycode:
-     *   letters, digits, and the punctuation/symbol keys used in common editor shortcuts.
      */
     private static int charToKeyCode(int code) {
         // a-z / A-Z

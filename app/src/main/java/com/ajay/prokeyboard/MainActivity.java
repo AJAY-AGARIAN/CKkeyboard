@@ -70,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attach();
 
+        AdManager.init(this);
+        AdManager.loadBanner(this, R.id.main_banner_ad);
+
         dialogBox cdd = new dialogBox(this);
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +107,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        AdManager.resumeBanner(this, R.id.main_banner_ad);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AdManager.pauseBanner(this, R.id.main_banner_ad);
+    }
+
+    @Override
     protected void onDestroy() {
+        AdManager.destroyBanner(this, R.id.main_banner_ad);
         super.onDestroy();
         viewPager.unregisterOnPageChangeCallback(viewlistner);
     }

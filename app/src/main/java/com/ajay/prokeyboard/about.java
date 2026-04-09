@@ -17,6 +17,9 @@ public class about extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        AdManager.init(this);
+        AdManager.loadBanner(this, R.id.about_banner_ad);
+
         Button attribution = findViewById(R.id.attribution);
         attribution.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,7 +37,7 @@ public class about extends AppCompatActivity
             }
         });
         adImg = findViewById(R.id.ad);
-        adImg.setOnClickListener(v -> {
+        if (adImg != null) adImg.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse("https://www.atmegame.com/?utm_source=AjayApps&utm_medium=AjayApps"));
             startActivity(intent);
@@ -60,5 +63,23 @@ public class about extends AppCompatActivity
                 startActivity(Intent.createChooser(Email, "Send Feedback over E-mail:"));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AdManager.resumeBanner(this, R.id.about_banner_ad);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AdManager.pauseBanner(this, R.id.about_banner_ad);
+    }
+
+    @Override
+    protected void onDestroy() {
+        AdManager.destroyBanner(this, R.id.about_banner_ad);
+        super.onDestroy();
     }
 }
